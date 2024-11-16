@@ -78,4 +78,12 @@ export class HomePage {
       reader.readAsDataURL(blob);
     });
   }
+
+  copyToClipboard() {
+    navigator.clipboard.writeText(this.output).then(() => {
+      console.log('Recipe copied to clipboard');
+    }).catch(err => {
+      console.error('Could not copy text: ', err);
+    });
+  }
 }

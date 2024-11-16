@@ -56,6 +56,10 @@
       </ion-card-header>
       <ion-card-content>
         <ion-text [innerHTML]="formattedOutput"></ion-text>
+        <ion-button (click)="copyToClipboard()" expand="block" class="ion-margin-top">
+          <ion-icon name="copy-outline" slot="start"></ion-icon>
+          Copy Recipe
+        </ion-button>
       </ion-card-content>
     </ion-card>
 
