@@ -25,3 +25,9 @@
 #container a {
   text-decoration: none;
 }
+
+ion-img {
+  width: 50px;
+  height: 100px; 
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+}
