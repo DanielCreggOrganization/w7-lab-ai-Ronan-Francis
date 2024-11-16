@@ -9,12 +9,13 @@ import {
   IonRadioGroup, IonRadio, IonImg, IonTextarea,
   IonRippleEffect
 } from '@ionic/angular/standalone';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GeminiAiService } from '../services/gemini-ai.service';
 import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -40,6 +41,8 @@ export class HomePage {
 
   selectedImage = this.availableImages[0].url;
 
+  constructor(private geminiService: GeminiAiService) {}
+
   get formattedOutput() {
     return this.output.replace(/\n/g, '<br>');
   }
@@ -57,37 +60,8 @@ export class HomePage {
     this.isLoading = true;
 
     try {
-      const response = await fetch(this.selectedImage);
-      const blob = await response.blob();
-      const base64data = await new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.readAsDataURL(blob);
-      });
-      const base64String = base64data.split(',')[1];
-
-      // 1. Create the AI client
-      const genAI = new GoogleGenerativeAI(environment.googleApiKey);
-      // 2. Get the model
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      // 3. Call generateContent
-      const result = await model.generateContent({
-        contents: [{
-          role: 'user',
-          parts: [
-            {
-              inlineData: {
-                mimeType: 'image/jpeg',
-                data: base64String
-              }
-            },
-            { text: this.prompt }
-          ]
-        }]
-      });
-      // 4. Update this.output
-      this.output = result.response.text();
-
+      const base64Image = await this.geminiService.getImageAsBase64(this.selectedImage);
+      this.output = await this.geminiService.generateRecipe(base64Image, this.prompt);
     } catch (e) {
       this.output = `Error: ${e instanceof Error ? e.message : 'Something went wrong'}`;
     }
