@@ -67,7 +67,7 @@ export class HomePage {
       const base64String = base64data.split(',')[1];
 
       // 1. Create the AI client
-      const genAI = new GoogleGenerativeAI(environment.apiKey);
+      const genAI = new GoogleGenerativeAI(environment.googleApiKey);
       // 2. Get the model
       const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       // 3. Call generateContent
