@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Baking with Gemini</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="onSubmit()">
+    <!-- Image selection grid -->
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngFor="let img of availableImages; trackBy: trackByUrl" size="12" sizeMd="4">
+          <ion-card class="ion-activatable" (click)="selectImage(img.url)">
+            <ion-img [src]="img.url"></ion-img>
+            <ion-ripple-effect></ion-ripple-effect>
+            <ion-card-content>
+              <ion-radio-group [(ngModel)]="selectedImage" name="imageSelect">
+                <ion-item lines="none">
+                  <ion-radio [value]="img.url" slot="start"></ion-radio>
+                  <ion-label>{{ img.label }}</ion-label>
+                </ion-item>
+              </ion-radio-group>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    
+    <ion-card>
+      <ion-card-content>
+        <ion-textarea
+          [(ngModel)]="prompt"
+          name="prompt"
+          label="Instructions"
+          labelPlacement="floating"
+          [autoGrow]="true"
+          rows="2"
+          class="ion-margin-bottom"
+        ></ion-textarea>
+
+        <ion-button 
+          type="submit" 
+          expand="block"
+          class="ion-margin-top"
+          [disabled]="isLoading"
+        >
+          <ion-icon name="cafe-outline" slot="start"></ion-icon>
+          {{ isLoading ? 'Generating...' : 'Generate Recipe' }}
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="output">
+      <ion-card-header>
+        <ion-card-title>Generated Recipe</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-text [innerHTML]="formattedOutput"></ion-text>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-progress-bar *ngIf="isLoading" type="indeterminate"></ion-progress-bar>
+  </form>
+</ion-content>
